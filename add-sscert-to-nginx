@@ -1,0 +1,42 @@
+#first you need to create some folders
+
+    sudo mkdir /etc/ssl/private
+    sudo chmod 700 /etc/ssl/private
+
+
+# create the certificate 
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+
+# configure nginx to use the cert
+     sudo vi /etc/nginx/conf.d/ssl.conf
+
+          server {
+              listen 443 http2 ssl;
+              listen [::]:443 http2 ssl;
+
+              server_name server_IP_address;
+
+              ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+              ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+              ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+              root /usr/share/nginx/html;
+
+              location / {
+              }
+
+              error_page 404 /404.html;
+              location = /404.html {
+              }
+
+              error_page 500 502 503 504 /50x.html;
+              location = /50x.html {
+              }
+          }
+
+
+#restart service
+systemctl restart nginx
+
+done
