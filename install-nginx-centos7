@@ -1,0 +1,10 @@
+sudo yum install -y epel-release &&
+sudo yum install -y nginx &&
+sudo systemctl enable nginx &&
+sudo systemctl start nginx &&
+sudo firewall-cmd --add-service=http &&
+sudo firewall-cmd --add-service=https && 
+sudo firewall-cmd --runtime-to-permanent && 
+sudo chmod +764 /usr/share/nginx/html/
+echo "Hello-World" > /usr/share/nginx/html/index.html
+echo "Finish!"
