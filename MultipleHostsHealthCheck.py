@@ -19,7 +19,7 @@ for grid in grids.keys():
     print(f"grid: {grid}")
     for host in grids.get(grid):
         try:
-            r = requests.get(url=f"https://{grids[grid][host]}/v2/flow_test",
+            r = requests.get(url=f"https://{grids[grid][host]}/health",
                              headers={},
                              files={},
                              auth=None,
