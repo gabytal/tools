@@ -1,0 +1,10 @@
+wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz
+tar -xf Python-3.7.4.tgz
+cd Python-3.7.4
+./configure
+sudo make altinstall
+sudo echo "alias python='python3.7' >> /etc/bash.bashrc
+sudo echo "alias pip='pip3.7' >> /etc/bash.bashrc
+source /etc/bash.bashrc
+python --version
+pip --version
