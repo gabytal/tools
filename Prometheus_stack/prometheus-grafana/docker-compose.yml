@@ -1,0 +1,59 @@
+version: "3.7"
+networks:
+    mynetwork:
+        ipam:
+            driver: default
+            config:
+                 - subnet: 172.16.0.0/24
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    networks:
+      mynetwork:
+        ipv4_address: 172.16.0.2
+    volumes:
+          - /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/enabled_plugins:/var/lib/rabbitmq/enabled_plugins
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 15692:15692
+
+  rabbitmq-exporter:
+    image: kbudde/rabbitmq-exporter
+    container_name: "rabbitmq-exporter"
+    networks:
+      mynetwork:
+        ipv4_address: 172.16.0.5
+    ports:
+        - "9419:9419"
+    environment:
+      - RABBIT_URL=http://172.16.0.2:15672
+
+
+  prometheus:
+    container_name: prometheus
+    networks:
+      mynetwork:
+        ipv4_address: 172.16.0.3
+    image: prom/prometheus:latest
+    volumes:
+            -  /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    links:
+      - rabbitmq
+  grafana:
+    container_name: grafana
+    networks:
+      mynetwork:
+        ipv4_address: 172.16.0.4
+    image: grafana/grafana:latest
+    volumes:
+            - /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/grafana/grafana.ini:/etc/grafana/grafana.ini
+            - /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+    ports:
+      - 3000:3000
+    links:
+            - prometheus
