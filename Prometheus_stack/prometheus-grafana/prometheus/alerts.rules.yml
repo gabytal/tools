@@ -1,0 +1,10 @@
+groups:
+- name: my_rules
+  rules:
+  # API request rate alert
+  - alert: ALERT_NAME
+    expr: SOME_METRIC > 100
+    for: 15m
+    annotations:
+      description: alert when queue some metric greater than 100 for 15 min
+      summary: processed_urls

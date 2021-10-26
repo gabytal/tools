@@ -31,7 +31,6 @@ services:
     environment:
       - RABBIT_URL=http://172.16.0.2:15672
 
-
   prometheus:
     container_name: prometheus
     networks:
@@ -40,10 +39,25 @@ services:
     image: prom/prometheus:latest
     volumes:
             -  /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+            -  /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/prometheus/alerts.rules.yml:/etc/prometheus/alerts.rules.yml
+
     ports:
       - 9090:9090
     links:
       - rabbitmq
+
+  alertmanager:
+    image: prom/alertmanager
+    volumes:
+            -  /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    ports:
+      - 9093:9093
+    networks:
+      mynetwork:
+        ipv4_address: 172.16.0.8
+
   grafana:
     container_name: grafana
     networks:
@@ -55,5 +69,3 @@ services:
             - /Users/gtal/PycharmProjects/Prometheus_stack/prometheus-grafana/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
     ports:
       - 3000:3000
-    links:
-            - prometheus
